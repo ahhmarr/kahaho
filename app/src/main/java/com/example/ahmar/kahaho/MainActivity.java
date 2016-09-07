@@ -1,9 +1,17 @@
 package com.example.ahmar.kahaho;
 
+import android.*;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,10 +23,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener {
     NavigationView navigationView=null;
     Toolbar toolbar=null;
+    GoogleApiClient mGoogleApiClient = null;
+    String location=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +56,14 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
+    //
+        if(mGoogleApiClient==null){
+            mGoogleApiClient=new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -51,6 +74,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        mGoogleApiClient.connect();
+
+    }
+    @Override
+    public void onStop(){
+        mGoogleApiClient.disconnect();
+        super.onStop();
+
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -119,8 +154,38 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    public void getMap(View v){
 
-    public void getMap(View view) {
-        Toast.makeText(MainActivity.this, "clicked me", Toast.LENGTH_SHORT).show();
+        if(location.length()>0){
+            Toast.makeText(this, location, Toast.LENGTH_SHORT).show();
+        }
     }
+
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            Location mLastLocation=LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation!=null){
+                location="Lat : "+String.valueOf(mLastLocation.getLatitude())+" long : "+String.valueOf(mLastLocation.getLongitude());
+            }
+            Toast.makeText(MainActivity.this, "it has permission", Toast.LENGTH_SHORT).show();
+        }
+        else{
+           ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},11);
+            Toast.makeText(MainActivity.this, "no permission", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
 }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1046614843856",
+    "project_id": "api-project-1046614843856"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046614843856:android:2f3d22b428117e57",
+        "android_client_info": {
+          "package_name": "com.example.ahmar.kahaho"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1046614843856-djcj5piuggd27sv6l8oqettan6i6tgrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ahmar.kahaho",
+            "certificate_hash": "EF69C1A569CAD1EEB1CC02CF4383262704FA5745"
+          }
+        },
+        {
+          "client_id": "1046614843856.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABjMYI1qzWbzmTivj79N90gbMM7VwuqTo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
